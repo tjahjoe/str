@@ -1,6 +1,7 @@
 langchain
 langchain-google-genai
 langchain-chroma
+chroma-hnswlib
 chromadb
 streamlit
 opencv-python-headless

@@ -1,6 +1,7 @@
 import streamlit as st
 import cv2
 import time
+import numpy as np
 from datetime import datetime
 from requests import get
 from ultralytics import YOLO
@@ -39,22 +40,14 @@ class HomePage:
     def _handle_streaming(self):
         st.write(st.session_state['is_streaming'])
         if st.session_state['is_streaming'] and self.__url != '':
-            cap = cv2.VideoCapture(self.__url)
-            try:
-                while st.session_state['is_streaming']:
-                    success, frame = cap.read()
-                    if not success:
-                        break
-
-                    frame = cv2.flip(frame, 1)
+            uploaded_file = st.file_uploader("Unggah Foto", type=["jpg", "jpeg", "png"])
+            if uploaded_file is not None:
+                image = cv2.imdecode(np.frombuffer(uploaded_file.read(), np.uint8), cv2.IMREAD_COLOR)
+                if image is not None:
+                    frame = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # Convert to BGR for OpenCV
                     results = self.__model(frame, verbose=False, conf=0.5)
-                    frame = results[0].plot()
-
-                    self.stream_placeholder.image(frame, channels='BGR')
-                    self._update_info()
-            finally:
-                cap.release()
-                cv2.destroyAllWindows()
+                    detected_frame = results[0].plot()
+                    self.stream_placeholder.image(detected_frame, channels='BGR')
         else :
             st.session_state['is_streaming'] = False
 

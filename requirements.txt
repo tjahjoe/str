@@ -1,8 +1,5 @@
 langchain
 langchain-google-genai
-chroma-hnswlib==0.7.3
-chromadb==0.3.29
-chromadb
 streamlit
 opencv-python-headless
 requests

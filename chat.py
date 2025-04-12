@@ -16,7 +16,7 @@ class ChatPage:
 
     def show(self):
         st.title('Asisten Ahli Tanaman 🌿')
-        st.markdown('Tanyakan apa saja tentang tanaman. Untuk pertanyaan non-tanaman akan ditolak secara sopan.')
+        st.markdown('Tanyakan apa saja tentang tanaman. Aku tidak bisa mengingat pertanyaan sebelumnya.')
 
         question = st.text_input('Pertanyaan Anda:')
 

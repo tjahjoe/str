@@ -48,17 +48,17 @@ class HomePage:
     def _process_url_image(self, image_url):
         try:
             response = requests.get(image_url, stream=True)
-            response.raise_for_status()  # Raise an exception for bad status codes
+            response.raise_for_status()
 
             image_bytes = np.asarray(bytearray(response.raw.read()), dtype=np.uint8)
             frame = cv2.imdecode(image_bytes, cv2.IMREAD_COLOR)
 
             if frame is not None:
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert to RGB for Streamlit
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) 
                 results = self.__model(frame, verbose=False, conf=0.5)
                 detected_frame = results[0].plot()
                 self.stream_placeholder.image(detected_frame, channels='RGB')
-                self._update_info()
+                # self._update_info()
             else:
                 st.error("Gagal membaca gambar dari URL.")
 
@@ -67,13 +67,13 @@ class HomePage:
         except Exception as e:
             st.error(f"Terjadi kesalahan tak terduga: {e}")
 
-    def _update_info(self):
-        now = time.time()
-        if now - st.session_state['last_hallo_time'] >= 1:
-            try:
-                server_time = get(url='https://indodax.com//api/server_time').json()['server_time']
-                self.data_placeholder.write(server_time)
-                self.hallo_placeholder.write(f'hallo - {datetime.now().strftime("%H:%M:%S")}')
-                st.session_state['last_hallo_time'] = now
-            except Exception as e:
-                self.data_placeholder.error(f"Error fetching server time: {e}")
+    # def _update_info(self):
+    #     now = time.time()
+    #     if now - st.session_state['last_hallo_time'] >= 1:
+    #         try:
+    #             server_time = get(url='https://indodax.com//api/server_time').json()['server_time']
+    #             self.data_placeholder.write(server_time)
+    #             self.hallo_placeholder.write(f'hallo - {datetime.now().strftime("%H:%M:%S")}')
+    #             st.session_state['last_hallo_time'] = now
+    #         except Exception as e:
+    #             self.data_placeholder.error(f"Error fetching server time: {e}")

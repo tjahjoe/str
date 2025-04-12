@@ -1,5 +1,6 @@
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
+from chromadb import HttpClient
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.docstore.document import Document
 
@@ -9,21 +10,29 @@ class ChromaDatabase():
 
         self.__model_embedding = 'models/embedding-001'
         self.__collection_name = 'my_collection'
-        self.__persist_directory = './chroma'
-
-        self.__first_text = '''Kamu adalah ahli tanaman dan juga teman saya.'''
 
         self.__embedding = GoogleGenerativeAIEmbeddings(
             google_api_key=self.__GOOGLE_API_KEY,
             model=self.__model_embedding
         )
 
-        self.__vectorstore = Chroma(
-            collection_name=self.__collection_name,
-            embedding_function=self.__embedding,
-            persist_directory=self.__persist_directory
+        self.__chroma_host = 'coherent-classic-platypus.ngrok-free.app'  
+        self.__chroma_port = 443
+        self.__use_ssl = True
+
+        self.__client = HttpClient(
+            host=self.__chroma_host,
+            port=self.__chroma_port,
+            ssl=self.__use_ssl
         )
 
+        self.__vectorstore = Chroma(
+            client=self.__client,
+            collection_name=self.__collection_name,
+            embedding_function=self.__embedding
+        )
+
+        self.__first_text = '''Kamu adalah ahli tanaman dan juga teman saya.'''
         self.__insert_first_text_to_chroma()
 
         self.retriever = self.__vectorstore.as_retriever()

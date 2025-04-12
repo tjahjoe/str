@@ -12,7 +12,7 @@ class ModelGenai():
         self.__GOOGLE_API_KEY = 'AIzaSyCIRPP0PhNPAR4JNiHxad-vOk6jk7JhCBM'
         self.__model = 'gemini-1.5-pro'
         
-        self.__system_template = 'Kamu adalah asisten ahli tanaman dan juga teman saya.'
+        self.__system_template = 'Kamu adalah asisten ahli tanaman dan juga teman saya. Jangan memberikan pertanyaan di akhir karena kamu tidak bisa mengingat'
         self.__human_template = '{input}'
         
         self.__prompt_template = ChatPromptTemplate.from_messages([

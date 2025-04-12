@@ -1,5 +1,5 @@
 import streamlit as st
-from model.model_genai import ModelGenai
+from model_genai import ModelGenai
 
 class ChatPage:
     def __init__(self):

@@ -1,8 +1,8 @@
 import streamlit as st
 import logging
-from src.home import HomePage
-from src.chat import ChatPage
-from src.dashboard import DashboardPage
+from home import HomePage
+from chat import ChatPage
+from dashboard import DashboardPage
 
 class Main:
     def __init__(self):

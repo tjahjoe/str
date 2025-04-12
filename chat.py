@@ -1,5 +1,3 @@
-import sys
-import os
 import streamlit as st
 from io import StringIO
 from model_genai import ModelGenai
@@ -31,7 +29,7 @@ class ChatPage:
         with st.spinner('Menjawab...'):
             try:
                 full_answer = StringIO()
-                answer_stream = self.__model.chain.stream({'question': question})
+                answer_stream = self.__model.chain.stream({'input': question})
 
                 response_container = st.empty()
                 output = ''
@@ -44,6 +42,6 @@ class ChatPage:
                 response_container.markdown(output) 
                 st.success('✅ Jawaban disimpan ke database.')
             except Exception as e:
-                st.error('❌ Terjadi kesalahan. Mungkin kuota API habis.')
+                st.error('❌ Terjadi kesalahan. Mungkin kuota API habis.', e)
 
 

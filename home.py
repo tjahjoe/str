@@ -14,7 +14,7 @@ class HomePage:
         if 'last_image' not in st.session_state:
             st.session_state['last_image'] = None
 
-        self.__model_file = 'model/best.pt'
+        self.__model_file = 'best.pt'
         self.__model = YOLO(self.__model_file)
         self.__url = '' 
 

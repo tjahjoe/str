@@ -12,7 +12,7 @@ class HomePage:
         if 'last_hallo_time' not in st.session_state:
             st.session_state['last_hallo_time'] = time.time()
 
-        self.__model_file = 'server/best.pt'
+        self.__model_file = 'best.pt'
         self.__model = YOLO(self.__model_file)
 
     def show(self):

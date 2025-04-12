@@ -1,6 +1,6 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
-from server.chroma_database import ChromaDatabase
+from chroma_database import ChromaDatabase
 # from dotenv import load_dotenv
 from langchain_core.runnables import RunnableMap, RunnablePassthrough
 import os

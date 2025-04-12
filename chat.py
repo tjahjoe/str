@@ -2,8 +2,8 @@ import sys
 import os
 import streamlit as st
 from io import StringIO
-from server.model_genai import ModelGenai
-from server.chroma_database import ChromaDatabase
+from model_genai import ModelGenai
+from chroma_database import ChromaDatabase
 
 class ChatPage:
     def __init__(self):

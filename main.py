@@ -2,11 +2,9 @@ import sys
 import os
 import streamlit as st
 import logging
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from src.home import HomePage
-from src.chat import ChatPage
-from src.dashboard import DashboardPage
+from home import HomePage
+from chat import ChatPage
+from dashboard import DashboardPage
 
 class Main:
     def __init__(self):

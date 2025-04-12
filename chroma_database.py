@@ -1,5 +1,5 @@
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain.vectorstores.chroma import Chroma
+from langchain_chroma import Chroma
 from chromadb import HttpClient
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.docstore.document import Document

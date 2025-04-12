@@ -11,12 +11,12 @@ class HomePage:
     def __init__(self):
         if 'is_streaming' not in st.session_state:
             st.session_state['is_streaming'] = False
-        if 'last_hallo_time' not in st.session_state:
-            st.session_state['last_hallo_time'] = time.time()
+        if 'last_image' not in st.session_state:
+            st.session_state['last_image'] = None
 
-        self.__model_file = 'best.pt'
+        self.__model_file = 'model/best.pt'
         self.__model = YOLO(self.__model_file)
-        self.__url = ""  # Initialize URL
+        self.__url = '' 
 
     def show(self):
         st.title('Home Overview')
@@ -38,10 +38,13 @@ class HomePage:
             st.session_state['is_streaming'] = True
         if st.button('Stop'):
             st.session_state['is_streaming'] = False
+            st.session_state['last_image'] = None
 
     def _handle_display(self):
         if st.session_state['is_streaming'] and self.__url != '':
             self._process_url_image(self.__url)
+        elif st.session_state['is_streaming'] and st.session_state['last_image'] is not None:
+            self.stream_placeholder.image(st.session_state['last_image'], channels='RGB')
         else:
             st.session_state['is_streaming'] = False
 
@@ -51,21 +54,24 @@ class HomePage:
             response.raise_for_status()
 
             image_bytes = np.asarray(bytearray(response.raw.read()), dtype=np.uint8)
+
+            st.session_state['last_image'] = image_bytes
+
             frame = cv2.imdecode(image_bytes, cv2.IMREAD_COLOR)
 
             if frame is not None:
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) 
                 results = self.__model(frame, verbose=False, conf=0.5)
                 detected_frame = results[0].plot()
-                self.stream_placeholder.image(detected_frame, channels='RGB')
-                # self._update_info()
+                st.session_state['last_image'] = detected_frame
+
+                self.stream_placeholder.image(st.session_state['last_image'], channels='RGB')
             else:
                 st.error("Gagal membaca gambar dari URL.")
-
-        except requests.exceptions.RequestException as e:
-            st.error(f"Terjadi kesalahan saat mengambil gambar dari URL: {e}")
+                
         except Exception as e:
             st.error(f"Terjadi kesalahan tak terduga: {e}")
+
 
     # def _update_info(self):
     #     now = time.time()

@@ -1,6 +1,5 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
-from chroma_database import ChromaDatabase
 # from dotenv import load_dotenv
 from langchain_core.runnables import RunnableMap, RunnablePassthrough
 import os
@@ -12,12 +11,9 @@ class ModelGenai():
         # self.__GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
         self.__GOOGLE_API_KEY = 'AIzaSyCIRPP0PhNPAR4JNiHxad-vOk6jk7JhCBM'
         self.__model = 'gemini-1.5-pro'
-
-        self.__chroma_database = ChromaDatabase()
-        self.__retriever = self.__chroma_database.retriever
-
+        
         self.__system_template = 'Kamu adalah asisten ahli tanaman dan juga teman saya.'
-        self.__human_template = 'Gunakan konteks berikut untuk menjawab:\n\n{context}\n\nPertanyaan: {question}'
+        self.__human_template = '{input}'
         
         self.__prompt_template = ChatPromptTemplate.from_messages([
             SystemMessagePromptTemplate.from_template(self.__system_template),
@@ -30,14 +26,6 @@ class ModelGenai():
             streaming=True
         )
 
-        self.chain = (
-            RunnableMap({
-                "context": lambda x: self.__format_docs(self.__retriever.invoke(x["question"])),
-                "question": RunnablePassthrough()
-            })
-            | self.__prompt_template
-            | self.__llm
-        )
+        self.chain = self.__prompt_template | self.__llm
+        
 
-    def __format_docs(self, docs):
-        return "\n\n".join([doc.page_content for doc in docs])

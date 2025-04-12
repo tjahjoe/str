@@ -3,12 +3,10 @@ import os
 import streamlit as st
 from io import StringIO
 from model_genai import ModelGenai
-from chroma_database import ChromaDatabase
 
 class ChatPage:
     def __init__(self):
         self.__model = ModelGenai()
-        self.__chroma_database = ChromaDatabase()
 
     # @st.cache_resource
     # def __load_model(_self):
@@ -44,8 +42,6 @@ class ChatPage:
                     response_container.markdown(output + '▌') 
 
                 response_container.markdown(output) 
-
-                self.__chroma_database.insert_qa_to_chroma(output, question)
                 st.success('✅ Jawaban disimpan ke database.')
             except Exception as e:
                 st.error('❌ Terjadi kesalahan. Mungkin kuota API habis.')

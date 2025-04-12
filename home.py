@@ -1,9 +1,10 @@
 import streamlit as st
 import cv2
 import time
-import numpy as np
 from datetime import datetime
 from requests import get
+import requests
+import numpy as np
 from ultralytics import YOLO
 
 class HomePage:
@@ -15,12 +16,13 @@ class HomePage:
 
         self.__model_file = 'best.pt'
         self.__model = YOLO(self.__model_file)
+        self.__url = ""  # Initialize URL
 
     def show(self):
         st.title('Home Overview')
         st.write('Welcome to the main Home')
         col1, col2 = st.columns(2)
-        self.__url = st.text_input('masukkan url:')
+        self.__url = st.text_input('Masukkan URL Gambar:', key="image_url_input")
 
         with col2:
             self._control_streaming()
@@ -29,7 +31,7 @@ class HomePage:
             self.stream_placeholder = st.empty()
             self.hallo_placeholder = st.empty()
             self.data_placeholder = st.empty()
-            self._handle_streaming()
+            self._handle_display()
 
     def _control_streaming(self):
         if st.button('Start'):
@@ -37,19 +39,33 @@ class HomePage:
         if st.button('Stop'):
             st.session_state['is_streaming'] = False
 
-    def _handle_streaming(self):
-        st.write(st.session_state['is_streaming'])
+    def _handle_display(self):
         if st.session_state['is_streaming'] and self.__url != '':
-            uploaded_file = st.file_uploader("Unggah Foto", type=["jpg", "jpeg", "png"])
-            if uploaded_file is not None:
-                image = cv2.imdecode(np.frombuffer(uploaded_file.read(), np.uint8), cv2.IMREAD_COLOR)
-                if image is not None:
-                    frame = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # Convert to BGR for OpenCV
-                    results = self.__model(frame, verbose=False, conf=0.5)
-                    detected_frame = results[0].plot()
-                    self.stream_placeholder.image(detected_frame, channels='BGR')
-        else :
+            self._process_url_image(self.__url)
+        else:
             st.session_state['is_streaming'] = False
+
+    def _process_url_image(self, image_url):
+        try:
+            response = requests.get(image_url, stream=True)
+            response.raise_for_status()  # Raise an exception for bad status codes
+
+            image_bytes = np.asarray(bytearray(response.raw.read()), dtype=np.uint8)
+            frame = cv2.imdecode(image_bytes, cv2.IMREAD_COLOR)
+
+            if frame is not None:
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert to RGB for Streamlit
+                results = self.__model(frame, verbose=False, conf=0.5)
+                detected_frame = results[0].plot()
+                self.stream_placeholder.image(detected_frame, channels='RGB')
+                self._update_info()
+            else:
+                st.error("Gagal membaca gambar dari URL.")
+
+        except requests.exceptions.RequestException as e:
+            st.error(f"Terjadi kesalahan saat mengambil gambar dari URL: {e}")
+        except Exception as e:
+            st.error(f"Terjadi kesalahan tak terduga: {e}")
 
     def _update_info(self):
         now = time.time()

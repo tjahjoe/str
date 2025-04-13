@@ -25,31 +25,31 @@ class DetectionPage:
         col1, col2 = st.columns(2)
 
         with col2:
-            self._control_streaming()
+            self.__control_streaming()
 
         with col1:
             self.stream_placeholder = st.empty()
             self.hallo_placeholder = st.empty()
             self.data_placeholder = st.empty()
-            self._handle_display()
+            self.__handle_display()
 
-    def _control_streaming(self):
+    def __control_streaming(self):
         if st.button('Ambil Gambar 📸'):
             st.session_state['is_streaming'] = True
             st.session_state['last_image'] = None
         if st.button('Unduh 💾'):
-            self._download_button()
+            self.__download_button()
         if st.button('Berhenti 🛑'):
             st.session_state['is_streaming'] = False
             st.session_state['last_image'] = None
 
-    def _handle_display(self):
+    def __handle_display(self):
         if st.session_state['is_streaming'] and st.session_state['last_image'] is not None:
             self.stream_placeholder.image(st.session_state['last_image'], channels='RGB')
         elif st.session_state['is_streaming']:
-            self._process_url_image(self.__url)
+            self.__process_url_image(self.__url)
 
-    def _process_url_image(self, image_url):
+    def __process_url_image(self, image_url):
         try:
             response = requests.get(image_url, stream=True)
             response.raise_for_status()
@@ -75,7 +75,7 @@ class DetectionPage:
             st.error(f"Terjadi kesalahan tak terduga 💥: {e}")
             st.session_state['is_streaming'] = False
     
-    def _download_button(self):
+    def __download_button(self):
         if st.session_state['last_image'] is not None:
             rgb_image = cv2.cvtColor(st.session_state['last_image'], cv2.COLOR_RGB2BGR)
             success, buffer = cv2.imencode('.jpg', rgb_image)

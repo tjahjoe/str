@@ -16,13 +16,13 @@ class HomePage:
 
         self.__model_file = 'best.pt'
         self.__model = YOLO(self.__model_file)
-        self.__url = '' 
+        self.__url = 'https://api-smart-pot.vercel.app/get/image' 
 
     def show(self):
         st.title('Home Overview')
         st.write('Welcome to the main Home')
         col1, col2 = st.columns(2)
-        self.__url = st.text_input('Masukkan URL Gambar:', key="image_url_input")
+        # self.__url = st.text_input('Masukkan URL Gambar:', key="image_url_input")
 
         with col2:
             self._control_streaming()
@@ -36,15 +36,16 @@ class HomePage:
     def _control_streaming(self):
         if st.button('Start'):
             st.session_state['is_streaming'] = True
+            st.session_state['last_image'] = None
         if st.button('Stop'):
             st.session_state['is_streaming'] = False
             st.session_state['last_image'] = None
 
     def _handle_display(self):
-        if st.session_state['is_streaming'] and self.__url != '':
-            self._process_url_image(self.__url)
-        elif st.session_state['is_streaming'] and st.session_state['last_image'] is not None:
+        if st.session_state['is_streaming'] and st.session_state['last_image'] is not None:
             self.stream_placeholder.image(st.session_state['last_image'], channels='RGB')
+        elif st.session_state['is_streaming']:
+            self._process_url_image(self.__url)
         else:
             st.session_state['is_streaming'] = False
 

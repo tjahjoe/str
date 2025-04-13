@@ -2,14 +2,12 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 # from dotenv import load_dotenv
 from langchain_core.runnables import RunnableMap, RunnablePassthrough
-import os
+# import os
+import streamlit as st
 
 class ModelGenai():
     def __init__(self):
-        # load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
-
-        # self.__GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
-        self.__GOOGLE_API_KEY = 'AIzaSyCIRPP0PhNPAR4JNiHxad-vOk6jk7JhCBM'
+        self.__GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
         self.__model = 'gemini-1.5-pro'
         
         self.__system_template = 'Kamu adalah asisten ahli tanaman dan juga teman saya. Jangan memberikan pertanyaan di akhir karena kamu tidak bisa mengingat'

@@ -3,6 +3,7 @@ import cv2
 import requests
 import numpy as np
 import base64
+import streamlit.components.v1 as components
 from datetime import datetime
 from ultralytics import YOLO
 
@@ -83,11 +84,15 @@ class DetectionPage:
                 b64 = base64.b64encode(buffer).decode()
                 filename = f"detected_image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
                 href = f'''
-                        <a href="data:file/jpg;base64,{b64}" download="{filename}">Tekan! 🔘</a>
+                        {st.success("🎉 Gambar berhasil diunduh!")
+}
+                        <a href="data:file/jpg;base64,{b64}" download="{filename}" id="download-link"></a>
                         
-                        <script>console.log('a')</script>
+                        <script>
+                            document.getElementById("download-link").click()
+                        </script>
                         '''
-                st.markdown(href, unsafe_allow_html=True)
+                components.html(href, height=0, width=0)
             else:
                 st.error("Gagal mengkodekan gambar untuk diunduh.")
         else:

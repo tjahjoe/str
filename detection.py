@@ -2,9 +2,11 @@ import streamlit as st
 import cv2
 import requests
 import numpy as np
+import base64
+from datetime import datetime
 from ultralytics import YOLO
 
-class HomePage:
+class DetectionPage:
     def __init__(self):
         if 'is_streaming' not in st.session_state:
             st.session_state['is_streaming'] = False
@@ -16,8 +18,9 @@ class HomePage:
         self.__url = 'https://api-smart-pot.vercel.app/get/image' 
 
     def show(self):
-        st.title('Home Overview')
-        st.write('Welcome to the main Home')
+        st.title('Deteksi Objek 🔍')
+        st.markdown('Selamat datang di halaman deteksi objek! 👀')
+        st.markdown('Tekan tombol "Ambil Gambar" untuk melakukan deteksi.')
         col1, col2 = st.columns(2)
 
         with col2:
@@ -30,10 +33,12 @@ class HomePage:
             self._handle_display()
 
     def _control_streaming(self):
-        if st.button('Start'):
+        if st.button('Ambil Gambar 📸'):
             st.session_state['is_streaming'] = True
             st.session_state['last_image'] = None
-        if st.button('Stop'):
+        if st.button('Unduh 💾'):
+            self._download_button()
+        if st.button('Berhenti 🛑'):
             st.session_state['is_streaming'] = False
             st.session_state['last_image'] = None
 
@@ -42,8 +47,6 @@ class HomePage:
             self.stream_placeholder.image(st.session_state['last_image'], channels='RGB')
         elif st.session_state['is_streaming']:
             self._process_url_image(self.__url)
-        else:
-            st.session_state['is_streaming'] = False
 
     def _process_url_image(self, image_url):
         try:
@@ -64,10 +67,33 @@ class HomePage:
 
                 self.stream_placeholder.image(st.session_state['last_image'], channels='RGB')
             else:
-                st.error("Gagal membaca gambar dari URL.")
+                st.error("Gagal membaca gambar dari URL 😞.")
+                st.session_state['is_streaming'] = False
                 
         except Exception as e:
-            st.error(f"Terjadi kesalahan tak terduga: {e}")
+            st.error(f"Terjadi kesalahan tak terduga 💥: {e}")
+            st.session_state['is_streaming'] = False
+    
+    def _download_button(self):
+        if st.session_state['last_image'] is not None:
+            rgb_image = cv2.cvtColor(st.session_state['last_image'], cv2.COLOR_RGB2BGR)
+            success, buffer = cv2.imencode('.jpg', rgb_image)
+
+            if success:
+                b64 = base64.b64encode(buffer).decode()
+                filename = f"detected_image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+                href = f'''
+                        <a href="data:file/jpg;base64,{b64}" download="{filename}">Tekan! 🔘</a>
+                        
+                        <script>console.log('a')</script>
+                        '''
+                st.markdown(href, unsafe_allow_html=True)
+            else:
+                st.error("Gagal mengkodekan gambar untuk diunduh.")
+        else:
+            st.warning("Tidak ada gambar yang terdeteksi untuk diunduh.")
+
+
 
 
     # def _update_info(self):

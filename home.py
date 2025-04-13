@@ -1,8 +1,5 @@
 import streamlit as st
 import cv2
-import time
-from datetime import datetime
-from requests import get
 import requests
 import numpy as np
 from ultralytics import YOLO
@@ -22,7 +19,6 @@ class HomePage:
         st.title('Home Overview')
         st.write('Welcome to the main Home')
         col1, col2 = st.columns(2)
-        # self.__url = st.text_input('Masukkan URL Gambar:', key="image_url_input")
 
         with col2:
             self._control_streaming()

@@ -6,14 +6,14 @@ from dashboard import DashboardPage
 
 class Main:
     def __init__(self):
-        # logging.basicConfig(
-        #     level=logging.WARNING,
-        #     format='%(asctime)s - %(levelname)s - %(message)s'
-        # )
-        # logging.getLogger('tenacity').setLevel(logging.WARNING)
-        # logging.getLogger('langchain').setLevel(logging.ERROR)
-        # logging.getLogger('langchain_google_genai').setLevel(logging.ERROR)
-        # logging.getLogger('httpx').setLevel(logging.ERROR)
+        logging.basicConfig(
+            level=logging.WARNING,
+            format='%(asctime)s - %(levelname)s - %(message)s'
+        )
+        logging.getLogger('tenacity').setLevel(logging.WARNING)
+        logging.getLogger('langchain').setLevel(logging.ERROR)
+        logging.getLogger('langchain_google_genai').setLevel(logging.ERROR)
+        logging.getLogger('httpx').setLevel(logging.ERROR)
 
         if 'selected_page' not in st.session_state:
             st.session_state['selected_page'] = 'Dashboard'

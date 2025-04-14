@@ -37,4 +37,4 @@ class ChatPage:
                 st.success('✅ Jawaban diberikan.')
                 st.session_state['last_message'] = {'question': question, 'answer': output}
             except Exception as e:
-                st.warning('❌ Terjadi kesalahan. Mungkin kuota API habis.')
+                st.error('❌ Terjadi kesalahan. Mungkin kuota API habis.')
